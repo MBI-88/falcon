@@ -8,9 +8,12 @@ from config.config import DATABASE
 
 class DbConfig:   
     def get_connection(self):
-        self._conn = sqlite3.connect(DATABASE)
-        self._conn.row_factory = sqlite3.Row
-        return self._conn
+        try: 
+            self._conn = sqlite3.connect(DATABASE)
+            self._conn.row_factory = sqlite3.Row
+            return self._conn
+        except ValueError:
+            raise ValueError("Database creation error")
     
     def python_type_to_sqlite(self, py_type):
         if py_type == str:
@@ -27,17 +30,19 @@ class DbConfig:
             return "TEXT"  # Fallback
 
     def create_table(self, cls):
-        table_name = cls.__name__.lower() + "s"
-        fields = cls.__annotations__
+        try:
+            table_name = cls.__name__.lower() + "s"
+            fields = cls.__annotations__
+            columns = []
+            for name, py_type in fields.items():
+                sql_type = self.python_type_to_sqlite(py_type)
+                column_def = f"{name} {sql_type}"
+                if name == "ID":
+                    column_def += " PRIMARY KEY"
+                columns.append(column_def)
 
-        columns = []
-        for name, py_type in fields.items():
-            sql_type = self.python_type_to_sqlite(py_type)
-            column_def = f"{name} {sql_type}"
-            if name == "ID":
-                column_def += " PRIMARY KEY"
-            columns.append(column_def)
-
-        sql = f"CREATE TABLE IF NOT EXISTS {table_name} (\n  " + ",\n  ".join(columns) + "\n);"
-        self._conn.execute(sql)
-        self._conn.commit()
+            sql = f"CREATE TABLE IF NOT EXISTS {table_name} (\n  " + ",\n  ".join(columns) + "\n);"
+            self._conn.execute(sql)
+            self._conn.commit()
+        except ValueError:
+            raise ValueError("Create table error")

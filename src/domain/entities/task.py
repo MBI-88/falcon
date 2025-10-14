@@ -4,6 +4,16 @@ from uuid import UUID
 
 
 class Task:
+    _id:UUID
+    _title:str
+    _description:str 
+    _created_at:date 
+    _due_date: date
+    _completed_at: date
+    _status: str
+    _priority:int
+    _tags:str
+
     def __init__(self, 
                  id:UUID,
                  title:str, 
@@ -14,7 +24,7 @@ class Task:
                  status: str,
                  priority:int,
                  tags:str
-                 ) -> None:
+                ) -> None:
         
 
         self._id = id or UUID()

@@ -1,0 +1,35 @@
+
+
+from datetime import date
+from uuid import UUID
+
+
+class DtoTask:
+
+    def __init__(self, 
+                 id:UUID | None,
+                 title:str | None, 
+                 description:str | None, 
+                 created_at:date | None, 
+                 due_date: date | None,
+                 completed_at: date | None,
+                 status: str | None,
+                 priority:int | None,
+                 tags:str | None
+                 ) -> None:
+        
+        self._dto = {
+            "id": id,
+            "title": title,
+            "description": description,
+            "created_at": created_at,
+            "due_date": due_date,
+            "completed_at": completed_at,
+            "status": status,
+            "priority": priority,
+            "tags": tags,
+        }
+    
+    @property
+    def get_dto(self) -> dict:
+        return self._dto
