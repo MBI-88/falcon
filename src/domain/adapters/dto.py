@@ -1,13 +1,7 @@
-
-
-from datetime import date
-from uuid import UUID
-
-
 class DtoTask:
 
     def __init__(self, 
-                 id:UUID | None,
+                 id:str | None,
                  title:str | None, 
                  description:str | None, 
                  created_at:str | None, 

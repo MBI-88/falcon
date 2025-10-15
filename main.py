@@ -1,10 +1,7 @@
-from src.domain.entities.task import Task
-import os
-
 from falcon import MEDIA_JSON 
-import config.config 
 import falcon.asgi
 
+from config import config
 from src.interactors.task.factory import NewFactoryTask
 from src.interfaces.falcon.api_v1 import NewTaskAPI
 from src.interfaces.repository.connections import NewDbConnection
@@ -18,7 +15,7 @@ app = falcon.asgi.App(
 
 db = DbConfig()
 conn = db.get_connection()   
-db.create_table(Task)
+db.create_table(config.sql)
 repo = NewDbConnection(conn)
 task = NewFactoryTask(repo)
 app = NewTaskAPI(app, task)

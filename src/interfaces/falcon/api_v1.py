@@ -1,4 +1,3 @@
-from uuid import UUID
 import falcon
 import falcon.asgi
 
@@ -13,19 +12,23 @@ class TaskAPI:
    
    async def on_get(self, req:falcon.Request, resp:falcon.Response) -> None:
         try: 
-            id = UUID(req.get_param("id"))
-            task = self._task.get_task(id)
-            resp.media = {
-                 "id": task.id,
-                "title": task.title,
-                "description": task.description,
-                "created_at": task.created_at,
-                "due_date": task.due_date,
-                "completed_at": task.completed_at,
-                "status": task.status,
-                "priority": task.priority,
-                "tags": task.tags,
-            }
+            id = req.get_param("q") or ""
+            if id != "":
+                task = self._task.get_task(id)
+                resp.media = {
+                    "id": task.id,
+                    "title": task.title,
+                    "description": task.description,
+                    "created_at": task.created_at,
+                    "due_date": task.due_date,
+                    "completed_at": task.completed_at,
+                    "status": task.status,
+                    "priority": task.priority,
+                    "tags": task.tags,
+                }
+            else:
+                resp.media = self._task.get_tasks()
+            
             resp.status = falcon.HTTP_OK
         except ValueError as e:
            raise falcon.HTTPBadRequest(description="{}".format(e))
@@ -33,7 +36,7 @@ class TaskAPI:
 
    async def on_patch(self, req:falcon.Request, resp:falcon.Response) -> None:
         try:
-             id = UUID(req.get_param("id"))
+             id = req.path
              body = await req.get_media()
              dto = DtoTask(
                 id=id, 
@@ -70,18 +73,10 @@ class TaskAPI:
             resp.status = falcon.HTTP_NO_CONTENT
         except ValueError as e:
             raise falcon.HTTPBadRequest(description="{}".format(e))
-        
-   
-   async def on_get_all(self, req:falcon.Request, resp:falcon.Response) ->  None:
-        try:
-            resp.media = self._task.get_tasks()
-            resp.status = falcon.HTTP_OK
-        except ValueError as e:
-            raise falcon.HTTPBadRequest(description="{}".format(e))
    
    async def on_delete(self, req:falcon.Request, resp:falcon.Response) -> None:
         try:
-            id = UUID(req.get_param("id"))
+            id = req.get_param("id") or ""
             self._task.delete_task(id)
         except ValueError as e:
             raise falcon.HTTPBadRequest(description="{}".format(e))
@@ -93,7 +88,6 @@ class TaskAPI:
 
 def NewTaskAPI(router: falcon.asgi.App, task:IFactoryTask) -> falcon.asgi.App:
      t = TaskAPI(task)
-     router.add_route("/tasks", t, suffix="all")
-     router.add_route("/task", t)
-     router.add_route("/task/{id}", t)
+     router.add_route("/v1/task", t)
+     router.add_route("/v1/task/{id}", t)
      return router

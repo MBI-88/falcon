@@ -34,14 +34,14 @@ class FactoryTask(IFactoryTask):
         
     
     @override
-    def delete_task(self, id: int) -> None:
+    def delete_task(self, id: str) -> None:
         try:
             self._repo.delete(id)
         except ValueError as e:
             raise e
     
     @override
-    def get_task(self, id: int) -> Task:
+    def get_task(self, id: str) -> Task:
         try:
             task = self._repo.find(id)
             return Task(**task)

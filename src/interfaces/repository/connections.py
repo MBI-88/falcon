@@ -16,9 +16,9 @@ class DbConnections(IRepository):
     def save(self, t: Task) -> None:
         try:
             self._conn.execute("""
-                    INSERT INTO tasks (title, description, created_at, due_date, completed_at, status, priority, tags)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (t.title, t.description, t.created_at, t.due_date,
+                    INSERT INTO tasks (id, title, description, created_at, due_date, completed_at, status, priority, tags)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (t.id,t.title, t.description, t.created_at, t.due_date,
                     t.completed_at, t.status, t.priority, t.tags))
             self._conn.commit()
         except (TypeError, ValueError) as e:
@@ -39,7 +39,7 @@ class DbConnections(IRepository):
             raise e
 
     @override
-    def delete(self, id:UUID) -> None:
+    def delete(self, id:str) -> None:
         try: 
             self._conn.execute("DELETE FROM tasks WHERE id = ?", (id,))
             self._conn.commit()
@@ -58,7 +58,7 @@ class DbConnections(IRepository):
             raise e
 
     @override
-    def find(self, id: UUID) -> dict:
+    def find(self, id:str) -> dict:
         try:
             row = self._conn.execute("SELECT * FROM tasks WHERE id = ?", (id,)).fetchone()
             return {

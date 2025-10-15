@@ -1,8 +1,9 @@
 
 from datetime import date
+from uuid import uuid4
 
 class Task:
-    id: int | None
+    id: str
     title: str
     description: str
     created_at: date
@@ -13,7 +14,7 @@ class Task:
     tags: str
 
     def __init__(self, **kwargs) -> None:
-        self.id = kwargs.get("id") 
+        self.id = kwargs.get("id") or uuid4().hex
         self.title = kwargs.get("title") or ""
         self.description = kwargs.get("description") or ""
         self.created_at =  kwargs.get("created_at")  or date.today()
