@@ -13,11 +13,11 @@ class IFactoryTask(ABC):
         pass
 
     @abstractmethod
-    def delete_task(self, id:UUID) -> None:
+    def delete_task(self, id:int) -> None:
         pass
 
     @abstractmethod
-    def get_task(self, id:UUID) -> Task:
+    def get_task(self, id:int) -> Task:
         pass
 
     @abstractmethod

@@ -10,14 +10,15 @@ class DtoTask:
                  id:UUID | None,
                  title:str | None, 
                  description:str | None, 
-                 created_at:date | None, 
-                 due_date: date | None,
-                 completed_at: date | None,
+                 created_at:str | None, 
+                 due_date: str | None,
+                 completed_at: str | None,
                  status: str | None,
                  priority:int | None,
                  tags:str | None
                  ) -> None:
-        
+       
+
         self._dto = {
             "id": id,
             "title": title,
@@ -29,6 +30,8 @@ class DtoTask:
             "priority": priority,
             "tags": tags,
         }
+        
+    
     
     @property
     def get_dto(self) -> dict:

@@ -24,10 +24,8 @@ class DbConfig:
             return "REAL"
         elif py_type in [date, datetime]:
             return "DATETIME"
-        elif py_type == UUID:
-            return "TEXT"
         else:
-            return "TEXT"  # Fallback
+            return "TEXT"
 
     def create_table(self, cls):
         try:
@@ -37,8 +35,8 @@ class DbConfig:
             for name, py_type in fields.items():
                 sql_type = self.python_type_to_sqlite(py_type)
                 column_def = f"{name} {sql_type}"
-                if name == "ID":
-                    column_def += " PRIMARY KEY"
+                if name == "id":
+                    column_def += " PRIMARY KEY AUTOINCREMENT"
                 columns.append(column_def)
 
             sql = f"CREATE TABLE IF NOT EXISTS {table_name} (\n  " + ",\n  ".join(columns) + "\n);"

@@ -15,7 +15,7 @@ class IRepository(ABC):
     
 
     @abstractmethod
-    def delete(self, id:UUID) -> None: 
+    def delete(self, id:int) -> None: 
         pass
 
     @abstractmethod
@@ -23,5 +23,5 @@ class IRepository(ABC):
         pass
 
     @abstractmethod
-    def find(self, id:UUID) -> dict:
+    def find(self, id:int) -> dict:
         pass

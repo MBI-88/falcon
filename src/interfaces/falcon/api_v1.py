@@ -27,8 +27,8 @@ class TaskAPI:
                 "tags": task.tags,
             }
             resp.status = falcon.HTTP_OK
-        except ValueError:
-            raise falcon.HTTPBadRequest(description="ID not found")
+        except ValueError as e:
+           raise falcon.HTTPBadRequest(description="{}".format(e))
             
 
    async def on_patch(self, req:falcon.Request, resp:falcon.Response) -> None:
@@ -48,8 +48,8 @@ class TaskAPI:
              )
              self._task.update_task(dto)
              resp.status = falcon.HTTP_NO_CONTENT
-        except ValueError:
-            raise falcon.HTTPBadRequest(description="ID not found")
+        except ValueError as e:
+            raise falcon.HTTPBadRequest(description="{}".format(e))
 
 
    async def on_post(self, req:falcon.Request, resp:falcon.Response) -> None:
@@ -60,7 +60,7 @@ class TaskAPI:
                 title=body.get("title"),
                 description=body.get("description"),
                 due_date=body.get("due_date"),
-                completed_at= body.get("complete_at"),
+                completed_at= body.get("completed_at"),
                 status=body.get("status"),
                 priority=body.get("priority"),
                 tags=body.get("tags"),
@@ -68,23 +68,23 @@ class TaskAPI:
              )
             self._task.create_task(dto)
             resp.status = falcon.HTTP_NO_CONTENT
-        except ValueError:
-            raise falcon.HTTPBadRequest(description="Body error")
+        except ValueError as e:
+            raise falcon.HTTPBadRequest(description="{}".format(e))
         
    
    async def on_get_all(self, req:falcon.Request, resp:falcon.Response) ->  None:
         try:
             resp.media = self._task.get_tasks()
             resp.status = falcon.HTTP_OK
-        except ValueError:
-            raise falcon.HTTPInternalServerError(description="Database error")
+        except ValueError as e:
+            raise falcon.HTTPBadRequest(description="{}".format(e))
    
    async def on_delete(self, req:falcon.Request, resp:falcon.Response) -> None:
         try:
             id = UUID(req.get_param("id"))
             self._task.delete_task(id)
-        except ValueError:
-            raise falcon.HTTPBadRequest(description="ID not found")
+        except ValueError as e:
+            raise falcon.HTTPBadRequest(description="{}".format(e))
    
         
 
