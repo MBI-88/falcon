@@ -17,20 +17,8 @@ app = falcon.asgi.App(
 )
 
 db = DbConfig()
-conn = db.get_connection()
-   
-if not os.path.exists(config.config.DATABASE):
-     print("Database not found. Creating...")
-     try:
-          db.create_table(Task)
-     except ValueError as e:
-          print(e)
-          exit()
-           
-     print("Database created successfult")
-
-   
-
+conn = db.get_connection()   
+db.create_table(Task)
 repo = NewDbConnection(conn)
 task = NewFactoryTask(repo)
 app = NewTaskAPI(app, task)
