@@ -1,3 +1,4 @@
+from dataclasses import field
 from sqlite3 import Connection
 from typing import override
 from uuid import UUID
@@ -28,12 +29,16 @@ class DbConnections(IRepository):
     @override
     def update(self, t: Task) -> None:
         try:
-            self._conn.execute("""
-                    UPDATE tasks
-                    SET title=?, description=?, due_date=?, completed_at=?, status=?, priority=?, tags=?
-                    WHERE id=?
-                """, (t.title, t.description, t.due_date, t.completed_at,
-                    t.status, t.priority, t.tags, t.id))
+            sql = """UPDATE tasks SET  """
+            params = []
+            for k,v in t.__dict__.items():
+                if k != "id" and v != "":
+                    sql += "{}=?, ".format(k)
+                    params.append(v)
+            sql = sql[:-2]
+            params.append(t.id)
+            sql +=  " WHERE id=?"
+            self._conn.execute(sql, params)
             self._conn.commit()
         except (TypeError, ValueError) as e:
             raise e

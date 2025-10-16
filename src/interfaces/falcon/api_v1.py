@@ -1,8 +1,9 @@
+from email.header import Header
 import falcon
 import falcon.asgi
 
 from src.domain.adapters.dto import DtoTask
-from src.interactors.task.interface import IFactoryTask
+from src.interactors.interface import IFactoryTask
 
 
 class TaskAPI:
@@ -34,9 +35,8 @@ class TaskAPI:
            raise falcon.HTTPBadRequest(description="{}".format(e))
             
 
-   async def on_patch(self, req:falcon.Request, resp:falcon.Response) -> None:
+   async def on_patch(self, req:falcon.Request, resp:falcon.Response, id:str) -> None:
         try:
-             id = req.path
              body = await req.get_media()
              dto = DtoTask(
                 id=id, 
@@ -50,7 +50,10 @@ class TaskAPI:
                 created_at= body.get("created_at")
              )
              self._task.update_task(dto)
-             resp.status = falcon.HTTP_NO_CONTENT
+             resp.status = falcon.HTTP_202
+             resp.media = {
+                 "message": "Resource updated"
+             }
         except ValueError as e:
             raise falcon.HTTPBadRequest(description="{}".format(e))
 
@@ -70,14 +73,20 @@ class TaskAPI:
                 created_at=None
              )
             self._task.create_task(dto)
-            resp.status = falcon.HTTP_NO_CONTENT
+            resp.status = falcon.HTTP_201
+            resp.media = {
+                "message": "Resource created"
+            }
         except ValueError as e:
             raise falcon.HTTPBadRequest(description="{}".format(e))
    
-   async def on_delete(self, req:falcon.Request, resp:falcon.Response) -> None:
+   async def on_delete(self, req:falcon.Request, resp:falcon.Response, id:str) -> None:
         try:
-            id = req.get_param("id") or ""
             self._task.delete_task(id)
+            resp.status = falcon.HTTP_202 
+            resp.media = {
+                "message": "Resource deleted"
+            }
         except ValueError as e:
             raise falcon.HTTPBadRequest(description="{}".format(e))
    

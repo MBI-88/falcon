@@ -2,7 +2,7 @@ from falcon import MEDIA_JSON
 import falcon.asgi
 
 from config import config
-from src.interactors.task.factory import NewFactoryTask
+from src.interactors.factory import NewFactoryTask
 from src.interfaces.falcon.api_v1 import NewTaskAPI
 from src.interfaces.repository.connections import NewDbConnection
 from src.interfaces.repository.db_config import DbConfig

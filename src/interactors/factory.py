@@ -4,7 +4,7 @@ from typing import override
 from src.domain.adapters.dto import DtoTask
 from src.domain.adapters.repository import IRepository
 from src.domain.entities.task import Task
-from src.interactors.task.interface import IFactoryTask
+from src.interactors.interface import IFactoryTask
 
 
 
